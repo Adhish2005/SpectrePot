@@ -1,8 +1,8 @@
-# ⚡ SpectrePot 3D — Global Threat Operations & Interactive Decoy Honeypot
+# ⚡ AttackMe — Global Threat Operations & Interactive Decoy Honeypot
 
 An interactive, multi-protocol cyber security honeypot and real-time **3D Cyber Threat Intelligence Visualizer** built in Python, AsyncIO, WebSockets, Three.js, and Globe.gl.
 
-SpectrePot lures attackers into simulated vulnerable environments (SSH, HTTP Admin & APIs, Telnet/IoT, and Port Scans), enriches attacker IPs with Geo-coordinates and MITRE ATT&CK taxonomies, and projects glowing ballistic trajectories onto a real-time 3D Earth globe.
+AttackMe lures attackers into simulated vulnerable environments (SSH, HTTP Admin & APIs, Telnet/IoT, and Port Scans), enriches attacker IPs with Geo-coordinates and MITRE ATT&CK taxonomies, and projects glowing ballistic trajectories onto a real-time 3D Earth globe.
 
 ---
 
@@ -62,7 +62,7 @@ Cyber Proj/
 pip install -r requirements.txt
 ```
 
-### 2. Launch SpectrePot 3D
+### 2. Launch AttackMe
 ```bash
 python3 run.py
 ```

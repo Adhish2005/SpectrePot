@@ -20,18 +20,18 @@ from backend.decoys.scan_decoy import PortScanDecoy
 import backend.server as server_module
 
 BANNER = r"""
-  ███████╗██████╗ ███████╗ ██████╗████████╗██████╗ ███████╗██████╗  ██████╗ ████████╗
-  ██╔════╝██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔══██╗██╔═══██╗╚══██╔══╝
-  ███████╗██████╔╝█████╗  ██║        ██║   ██████╔╝█████╗  ██████╔╝██║   ██║   ██║   
-  ╚════██║██╔═══╝ ██╔══╝  ██║        ██║   ██╔══██╗██╔══╝  ██╔═══╝ ██║   ██║   ██║   
-  ███████║██║     ███████╗╚██████╗   ██║   ██║  ██║███████╗██║     ╚██████╔╝   ██║   
-  ╚══════╝╚═╝     ╚══════╝ ╚═════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝      ╚═════╝    ╚═╝   
-                       3D Cyber Threat Intelligence & Decoy System
+    _   _   _             _    __  __      
+   / \ | |_| |_ __ _  ___| | _|  \/  | ___ 
+  / _ \| __| __/ _` |/ __| |/ / |\/| |/ _ \
+ / ___ \ |_| || (_| | (__|   <| |  | |  __/
+/_/   \_\__|\__\__,_|\___|_|\_\_|  |_|\___|
+
+              Real-World Honeypot & Threat Intelligence Platform
 """
 
 async def main():
     print("\033[1;36m" + BANNER + "\033[0m")
-    print(f"\033[1;32m[+] Initializing SpectrePot 3D Engine...\033[0m")
+    print(f"\033[1;32m[+] Initializing AttackMe Engine...\033[0m")
     
     # 1. Initialize SQLite Database
     await db.init_db()
@@ -93,7 +93,7 @@ async def main():
     # Graceful shutdown handler
     stop_event = asyncio.Event()
     def signal_handler():
-        print("\n\033[1;33m[!] Shutting down SpectrePot services gracefully...\033[0m")
+        print("\n\033[1;33m[!] Shutting down AttackMe services gracefully...\033[0m")
         ssh_decoy.stop()
         asyncio.create_task(http_decoy.stop())
         asyncio.create_task(telnet_decoy.stop())
@@ -114,5 +114,5 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
-        print("[*] SpectrePot shutdown complete.")
+        print("[*] AttackMe shutdown complete.")
         sys.exit(0)

@@ -1,6 +1,6 @@
-# SpectrePot — Public Deployment & Production Guide
+# AttackMe — Public Deployment & Production Guide
 
-This guide covers step-by-step instructions to deploy SpectrePot to the public internet in two distinct operational environments:
+This guide covers step-by-step instructions to deploy AttackMe to the public internet in two distinct operational environments:
 1. **Scenario A: Cloud Deployment on Amazon Web Services (AWS EC2)**
 2. **Scenario B: Self-Hosted Deployment on Proxmox VE (Home Lab / DMZ)**
 
@@ -26,7 +26,7 @@ This guide covers step-by-step instructions to deploy SpectrePot to the public i
                  │                               │
                  └───────────────┬───────────────┘
                                  │
-                         SPECTREPOT ENGINE
+                         ATTACKME ENGINE
 ```
 
 ---
@@ -38,7 +38,7 @@ Deploying on AWS EC2 gives you a dedicated public IPv4 address completely isolat
 ### Step 1.1: Launch an AWS EC2 Instance
 1. Log in to the **AWS Management Console** and navigate to **EC2**.
 2. Click **Launch Instance**:
-   - **Name**: `spectrepot-honeypot`
+   - **Name**: `attackme-honeypot`
    - **AMI**: `Ubuntu Server 24.04 LTS` or `22.04 LTS` (64-bit x86 or ARM).
    - **Instance Type**: `t3.micro` or `t4g.nano` (Free Tier eligible or ~$3–$5/month).
    - **Key Pair**: Create or select an existing `.pem` / `.ed25519` key pair.
@@ -89,15 +89,15 @@ Before redirecting port 22 to the honeypot, move the real SSH daemon to port `55
 
 ---
 
-### Step 1.4: Clone & Install SpectrePot on EC2
+### Step 1.4: Clone & Install AttackMe on EC2
 
 ```bash
 # Update packages and install python
 sudo apt update && sudo apt install -y python3 python3-pip git iptables-persistent
 
 # Clone your project repo or upload project files
-git clone <YOUR_REPO_URL> ~/spectrepot
-cd ~/spectrepot
+git clone <YOUR_REPO_URL> ~/attackme
+cd ~/attackme
 
 # Install Python dependencies
 pip3 install -r requirements.txt --break-system-packages
@@ -106,7 +106,7 @@ pip3 install -r requirements.txt --break-system-packages
 ---
 
 ### Step 1.5: Configure iptables Port Forwarding
-Standard internet scanners target low privileged ports (22, 80, 23). Redirect them to SpectrePot's unprivileged ports (2222, 8080, 2323):
+Standard internet scanners target low privileged ports (22, 80, 23). Redirect them to AttackMe's unprivileged ports (2222, 8080, 2323):
 
 ```bash
 # SSH Port 22 -> 2222
@@ -141,22 +141,22 @@ HONEYPOT_NODE = {
 ---
 
 ### Step 1.7: Run as a 24/7 Systemd Service
-Create a background service so SpectrePot starts automatically on boot:
+Create a background service so AttackMe starts automatically on boot:
 
 ```bash
-sudo nano /etc/systemd/system/spectrepot.service
+sudo nano /etc/systemd/system/attackme.service
 ```
 
 Paste:
 ```ini
 [Unit]
-Description=SpectrePot Honeypot Platform
+Description=AttackMe Honeypot Platform
 After=network.target
 
 [Service]
 Type=simple
 User=ubuntu
-WorkingDirectory=/home/ubuntu/spectrepot
+WorkingDirectory=/home/ubuntu/attackme
 ExecStart=/usr/bin/python3 run.py
 Restart=always
 RestartSec=5
@@ -169,7 +169,7 @@ WantedBy=multi-user.target
 Enable and start:
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable --now spectrepot
+sudo systemctl enable --now attackme
 ```
 
 Access your web dashboard at **`http://YOUR_AWS_PUBLIC_IP:8000`**.
@@ -214,11 +214,11 @@ Inside the Proxmox Container / VM console:
    # Set: Port 55222
    sudo systemctl restart ssh
    ```
-2. **Install SpectrePot:**
+2. **Install AttackMe:**
    ```bash
    sudo apt update && sudo apt install -y python3 python3-pip git iptables-persistent
-   git clone <YOUR_REPO_URL> /opt/spectrepot
-   cd /opt/spectrepot
+   git clone <YOUR_REPO_URL> /opt/attackme
+   cd /opt/attackme
    pip3 install -r requirements.txt --break-system-packages
    ```
 3. **Set up iptables NAT:**
@@ -230,18 +230,18 @@ Inside the Proxmox Container / VM console:
    ```
 4. **Create Systemd Service:**
    ```bash
-   sudo nano /etc/systemd/system/spectrepot.service
+   sudo nano /etc/systemd/system/attackme.service
    ```
    Paste:
    ```ini
    [Unit]
-   Description=SpectrePot Honeypot Platform
+   Description=AttackMe Honeypot Platform
    After=network.target
 
    [Service]
    Type=simple
    User=root
-   WorkingDirectory=/opt/spectrepot
+   WorkingDirectory=/opt/attackme
    ExecStart=/usr/bin/python3 run.py
    Restart=always
    RestartSec=5
@@ -251,7 +251,7 @@ Inside the Proxmox Container / VM console:
    ```
    Enable:
    ```bash
-   sudo systemctl enable --now spectrepot
+   sudo systemctl enable --now attackme
    ```
 
 ---

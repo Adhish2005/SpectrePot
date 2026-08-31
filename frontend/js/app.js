@@ -1,8 +1,8 @@
 /**
- * SpectrePot 3D — Core Application Controller & WebSocket Client
+ * AttackMe — Core Application Controller & WebSocket Client
  */
 
-class SpectrePotApp {
+class AttackMeApp {
     constructor() {
         this.socket = null;
         this.globe = null;
@@ -13,7 +13,7 @@ class SpectrePotApp {
     }
 
     init() {
-        console.log('[*] Initializing SpectrePot 3D Operations Center...');
+        console.log('[*] Initializing AttackMe Operations Center...');
 
         // 1. Initialize Threat Globe
         this.globe = new ThreatGlobe('globeContainer');
@@ -214,7 +214,7 @@ class SpectrePotApp {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new SpectrePotApp();
+    window.app = new AttackMeApp();
     window.app.init();
 });
 

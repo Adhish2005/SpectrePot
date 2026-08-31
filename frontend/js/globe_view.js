@@ -1,5 +1,5 @@
 /**
- * SpectrePot — Flat Geodesic Threat Trajectory Visualizer
+ * AttackMe — Flat Geodesic Threat Trajectory Visualizer
  * Professional editorial map powered by Globe.gl & Three.js
  */
 
