@@ -1,107 +1,87 @@
-# ⚡ SpectrePot 3D — Global Threat Operations & Interactive Decoy Honeypot
+# SpectrePot 3D — Cybersecurity Honeypot & Threat Visualizer
 
-An interactive, multi-protocol cyber security honeypot and real-time **3D Cyber Threat Intelligence Visualizer** built in Python, AsyncIO, WebSockets, Three.js, and Globe.gl.
+SpectrePot 3D is a Python-based honeypot that detects and records different types of cyber attacks and displays them on an interactive 3D globe.
 
-SpectrePot lures attackers into simulated vulnerable environments (SSH, HTTP Admin & APIs, Telnet/IoT, and Port Scans), enriches attacker IPs with Geo-coordinates and MITRE ATT&CK taxonomies, and projects glowing ballistic trajectories onto a real-time 3D Earth globe.
+It uses Python, AsyncIO, WebSockets, Three.js, and Globe.gl to simulate vulnerable services, collect attacker activity, map IP addresses, and classify attacks using the MITRE ATT&CK framework.
 
----
+## Key Features
 
-## 🌟 Key Features
+* **3D Threat Globe:** Displays attacker locations and attack paths in real time.
+* **SSH Honeypot (2222):** Simulates a Linux shell and records attacker commands and keystrokes.
+* **Web Honeypot (8080):** Detects attacks such as `.env`/`.git` scans, command injection, directory traversal, and SQL injection.
+* **Telnet/IoT Honeypot (2323):** Simulates a vulnerable IoT device commonly targeted by botnets.
+* **Port Scan Detection:** Detects reconnaissance attempts against common services such as FTP, MySQL, RDP, VNC, and Redis.
+* **MITRE ATT&CK Classification:** Categorizes attacks and assigns severity levels.
+* **Session Replay:** Replays recorded SSH sessions for analysis.
+* **Local Attack Simulation:** Includes tools for testing the honeypot with different attack scenarios.
 
-* 🌐 **Interactive 3D WebGL Threat Globe**: High-FPS rotating Earth globe with glowing parabolic projectile arcs connecting attacking origins to your honeypot station, impact ripple rings, and threat heatmaps.
-* 🔑 **Interactive Fake SSH Shell (Port 2222)**: Complete SSH server decoy with interactive pseudo-terminal (PTY), Linux shell command emulation (`uname`, `cat /etc/passwd`, `wget`, `whoami`, `ps aux`), and keystroke logging.
-* 🛡 **Vulnerable Web Traps (Port 8080)**: Catches environment credential harvesters (`.env`, `.git`), command injection exploits (`/api/ping?host=127.0.0.1;id`), directory traversal (`../../etc/passwd`), and SQL injection attempts.
-* 🤖 **Telnet IoT / Mirai Botnet Trap (Port 2323)**: Emulates BusyBox router shells targeted by Mirai and IoT malware.
-* 🔍 **Multi-Port Reconnaissance Trap**: Intercepts TCP port sweeps on unadvertised ports (FTP: 21, MySQL: 3306, RDP: 3389, VNC: 5900, Redis: 6379).
-* 🎯 **MITRE ATT&CK & Threat Classifier**: Automatically tags attacks with MITRE IDs (e.g. `T1110` Brute Force, `T1059` Command Execution, `T1190` Exploit Public-Facing App) and severity ratings (*Low, Medium, High, Critical*).
-* 📼 **Attacker Session Replayer**: Watch recorded attacker interactive terminal sessions replay keystroke-by-keystroke with speed controls.
-* 🔊 **Synthesized Web Audio Alerts**: Sci-fi cyber audio feedback for high-severity intrusions using the browser's native Web Audio API.
-* 🚀 **Smart Local Geo-Mapping**: Test seamlessly on `localhost` or private LANs — the engine dynamically maps local tests to realistic global threat actors so your 3D globe lights up instantly.
+## Architecture
 
----
-
-## 🏗 Architecture
-
-```
+```text
 Cyber Proj/
 ├── backend/
-│   ├── config.py                 # Network configuration & honeypot node coordinates
-│   ├── server.py                 # FastAPI Web & WebSocket stream server
+│   ├── config.py
+│   ├── server.py
 │   ├── decoys/
-│   │   ├── ssh_decoy.py          # Interactive SSH honeypot with simulated Linux shell
-│   │   ├── http_decoy.py         # Vulnerable web traps (.env, RCE, LFI, SQLi)
-│   │   ├── telnet_decoy.py       # Mirai IoT decoy
-│   │   └── scan_decoy.py         # Multi-port TCP connect trap
+│   │   ├── ssh_decoy.py
+│   │   ├── http_decoy.py
+│   │   ├── telnet_decoy.py
+│   │   └── scan_decoy.py
 │   └── engine/
-│       ├── database.py           # SQLite asynchronous event store
-│       ├── geo_enricher.py       # GeoIP lookup & smart LAN simulation engine
-│       ├── classifier.py         # MITRE ATT&CK taxonomy & severity engine
-│       └── session_recorder.py   # Keystroke session recording
+│       ├── database.py
+│       ├── geo_enricher.py
+│       ├── classifier.py
+│       └── session_recorder.py
 ├── frontend/
-│   ├── index.html                # SOC Cyber Operations Center UI
-│   ├── css/style.css             # Cyberpunk/Dark-mode SOC stylesheet
+│   ├── index.html
+│   ├── css/style.css
 │   └── js/
-│       ├── sound.js              # Synthesized Web Audio alert engine
-│       ├── globe_view.js         # Globe.gl & Three.js 3D threat visualizer
-│       ├── charts.js             # Telemetry & SOC metrics
-│       ├── replayer.js           # Attacker terminal playback engine
-│       └── app.js                # Core controller & WebSocket client
 ├── tools/
-│   └── attack_sim.py             # Penetration testing & botnet attack generator
-├── run.py                        # Master single-command launcher
-├── requirements.txt              # Python dependencies
+│   └── attack_sim.py
+├── run.py
+├── requirements.txt
 └── README.md
 ```
 
----
+## Quick Start
 
-## ⚡ Quick Start
+Install the dependencies:
 
-### 1. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Launch SpectrePot 3D
+Start the honeypot:
+
 ```bash
 python3 run.py
 ```
-Open your browser at **[http://localhost:8000](http://localhost:8000)** to view the live 3D Cyber Operations Center.
 
-### 3. Launch Simulated Attacks
-Open a new terminal and run the built-in multi-vector attack generator:
+Open `http://localhost:8000` in your browser.
 
-* **Full Multi-Vector Suite**:
-  ```bash
-  python3 tools/attack_sim.py --mode all
-  ```
-* **Simulated Cyber War (Continuous Botnet Stream)**:
-  ```bash
-  python3 tools/attack_sim.py --mode botnet --duration 45
-  ```
-* **Targeted Attacks**:
-  ```bash
-  python3 tools/attack_sim.py --mode ssh      # SSH dictionary brute-force + shell
-  python3 tools/attack_sim.py --mode http     # Web scans, LFI, and RCE
-  python3 tools/attack_sim.py --mode telnet   # Mirai botnet IoT handshake
-  python3 tools/attack_sim.py --mode scan     # Multi-port reconnaissance sweep
-  ```
+To test the honeypot:
 
----
+```bash
+python3 tools/attack_sim.py --mode all
+```
 
-## 🧠 Networking & Security Concepts Learned
+Individual attack simulations are also available:
 
-1. **Socket Programming & Asynchronous I/O (`asyncio`, `paramiko`)**:
-   - Understanding TCP handshakes, socket state management, non-blocking stream readers/writers.
-   - Managing multiplexed connections across multiple concurrent decoy ports.
-2. **SSH Protocol & PTY Virtual Terminals**:
-   - Implementing SSH key exchange, user authentication negotiation, and emulating ANSI/VT100 terminal escape sequences.
-3. **HTTP Protocol Exploitation**:
-   - Parsing raw HTTP request lines, headers, query parameters, and form-encoded payloads.
-   - Detecting common web attack signatures (SQLi, Local File Inclusion, Remote Code Execution).
-4. **Threat Intelligence & MITRE ATT&CK Framework**:
-   - Mapping real-world adversary behaviors to standardized tactics and techniques.
-5. **Real-time Event Streaming & 3D WebGL**:
-   - Streaming binary/JSON event frames over WebSockets.
-   - Projecting spherical latitude/longitude coordinates onto 3D geodesics with Three.js.
+```bash
+python3 tools/attack_sim.py --mode ssh
+python3 tools/attack_sim.py --mode http
+python3 tools/attack_sim.py --mode telnet
+python3 tools/attack_sim.py --mode scan
+```
 
+## Concepts Used
+
+* TCP socket programming and asynchronous I/O
+* SSH and PTY-based terminal emulation
+* HTTP request parsing and attack detection
+* Honeypot and deception techniques
+* MITRE ATT&CK threat classification
+* GeoIP and threat mapping
+* WebSockets for real-time event streaming
+* Three.js/WebGL for 3D visualization
+* Session recording and attack analysis
