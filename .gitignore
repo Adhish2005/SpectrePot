@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+.venv~/
+venv/
+env/
+ENV/
+
+# Runtime data — generated at first launch, never committed
+data/spectrepot.db
+data/ssh_host_rsa.key
+data/quarantine/
+
+# IDE / editor config
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+nohup.out
+

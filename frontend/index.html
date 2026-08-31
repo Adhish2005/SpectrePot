@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpectrePot — Network Intelligence & Threat Decoy Platform</title>
+    
+    <!-- Typography: Space Grotesk (Grotesque Sans-Serif Headers/UI) + JetBrains Mono (Data/Code) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/three"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Styling -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- TOP NAVIGATION & CONTROL BAR -->
+    <header class="app-header">
+        <div class="header-brand-group">
+            <div class="brand-title">
+                <span class="brand-name">SpectrePot</span>
+                <span class="brand-divider">/</span>
+                <span class="brand-context">Threat Telemetry</span>
+            </div>
+            <div class="connection-status">
+                <span id="wsStatus" class="status-indicator online"></span>
+                <span id="wsStatusText" class="status-label">Live Stream Connected</span>
+            </div>
+        </div>
+
+        <!-- KEY METRICS OVERVIEW -->
+        <div class="telemetry-bar">
+            <div class="metric-item">
+                <span class="metric-label">Total Events</span>
+                <span id="hudTotalAttacks" class="metric-value">0</span>
+            </div>
+            <div class="metric-divider"></div>
+            <div class="metric-item">
+                <span class="metric-label">Critical Alerts</span>
+                <span id="hudCriticalThreats" class="metric-value text-critical">0</span>
+            </div>
+            <div class="metric-divider"></div>
+            <div class="metric-item">
+                <span class="metric-label">Unique Origins</span>
+                <span id="hudUniqueIps" class="metric-value">0</span>
+            </div>
+        </div>
+
+        <!-- GLOBAL ACTIONS -->
+        <div class="header-actions">
+            <button id="viewSessionsBtn" class="btn btn-secondary">Recorded Sessions</button>
+            <button id="clearLogsBtn" class="btn btn-danger">Clear Telemetry</button>
+        </div>
+    </header>
+
+    <!-- MAIN PLATFORM LAYOUT -->
+    <main class="app-layout">
+        
+        <!-- TOP ROW: GLOBE TRAJECTORY MAP + REAL-TIME LOG -->
+        <div class="layout-grid-top">
+            
+            <!-- THREAT TRAJECTORY MAP -->
+            <section class="card map-card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <h2 class="card-title">Geographic Threat Vectors</h2>
+                        <p class="card-subtitle">Real-time incoming connection trajectories to station node</p>
+                    </div>
+                </div>
+
+                <div class="map-wrapper">
+                    <!-- WebGL Canvas Container -->
+                    <div id="globeContainer"></div>
+
+                    <!-- Station Info Badge -->
+                    <div class="node-info-badge">
+                        <div class="node-name" id="nodeName">Station Node: US-West-01</div>
+                        <div class="node-coords" id="nodeLocation">San Francisco, United States (37.7749° N, 122.4194° W)</div>
+                </div>
+            </section>
+
+            <!-- REAL-TIME INTERCEPT LOG -->
+            <section class="card log-card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <h2 class="card-title">Event Stream</h2>
+                        <p class="card-subtitle">Live intercepted connection attempts and payload probes</p>
+                    </div>
+                    <div class="card-action">
+                        <span class="badge badge-neutral">Auto-Scroll</span>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Source Address</th>
+                                <th>Location</th>
+                                <th>Protocol</th>
+                                <th>Port</th>
+                                <th>MITRE ID</th>
+                                <th>Classification</th>
+                                <th>Payload / Query</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attackFeedBody">
+                            <!-- Rows populated via WebSocket -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- BOTTOM ROW: ANALYTICS & BREAKDOWN METRICS -->
+        <div class="layout-grid-bottom">
+            <section class="card analytics-card">
+                <div class="card-header">
+                    <h3 class="analytics-title">Protocol Distribution</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="protocolChart"></canvas>
+                </div>
+            </section>
+
+            <section class="card analytics-card">
+                <div class="card-header">
+                    <h3 class="analytics-title">Severity Breakdown</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </section>
+
+            <section class="card analytics-card">
+                <div class="card-header">
+                    <h3 class="analytics-title">Targeted Destination Ports</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="portsChart"></canvas>
+                </div>
+            </section>
+
+            <section class="card analytics-card">
+                <div class="card-header">
+                    <h3 class="analytics-title">Attempted Authentication Pairs</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="credsChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- SESSIONS DRAWER -->
+    <aside id="sessionsDrawer" class="drawer">
+        <div class="drawer-header">
+            <h3 class="drawer-title">Recorded Terminal Sessions</h3>
+            <button class="btn btn-xs btn-secondary" onclick="document.getElementById('sessionsDrawer').classList.remove('active')">Close</button>
+        </div>
+        <div id="sessionsList" class="drawer-content">
+            <!-- Recorded session cards -->
+        </div>
+    </aside>
+
+    <!-- INTERACTIVE TERMINAL REPLAYER MODAL -->
+    <div id="replayerModal" class="modal-backdrop">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="session-metadata">
+                    <span class="meta-item">Session <strong id="replaySessionId">#1</strong></span>
+                    <span class="meta-divider">|</span>
+                    <span class="meta-item">Origin: <strong id="replayIp">185.220.101.5</strong></span>
+                    <span class="meta-divider">|</span>
+                    <span class="meta-item">Protocol: <strong id="replayProto">SSH</strong></span>
+                    <span class="meta-divider">|</span>
+                    <span class="meta-item">User: <strong id="replayUser">root</strong></span>
+                </div>
+                <button class="btn btn-xs btn-secondary" onclick="sessionReplayer.closeModal()">Close</button>
+            </div>
+            
+            <div id="replayTerminal" class="terminal-view"></div>
+
+            <div class="modal-footer">
+                <div class="playback-controls">
+                    <button id="playPauseBtn" class="btn btn-xs btn-primary" onclick="sessionReplayer.togglePlayPause()">Pause</button>
+                    <button class="btn btn-xs btn-secondary" onclick="sessionReplayer.restart()">Restart</button>
+                </div>
+                <div class="speed-controls">
+                    <span class="speed-label">Playback Speed:</span>
+                    <button class="btn-speed active" data-speed="1.0" onclick="sessionReplayer.setSpeed(1.0)">1.0x</button>
+                    <button class="btn-speed" data-speed="2.0" onclick="sessionReplayer.setSpeed(2.0)">2.0x</button>
+                    <button class="btn-speed" data-speed="5.0" onclick="sessionReplayer.setSpeed(5.0)">5.0x</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="/js/globe_view.js"></script>
+    <script src="/js/charts.js"></script>
+    <script src="/js/replayer.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
