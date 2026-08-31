@@ -1,6 +1,6 @@
-# AttackMe — Cybersecurity Honeypot & Threat Visualizer
+# SpectrePot 3D — Cybersecurity Honeypot & Threat Visualizer
 
-AttackMe is a Python-based honeypot that detects and records different types of cyber attacks and displays them on an interactive 3D globe.
+SpectrePot 3D is a Python-based honeypot that detects and records different types of cyber attacks and displays them on an interactive 3D globe.
 
 It uses Python, AsyncIO, WebSockets, Three.js, and Globe.gl to simulate vulnerable services, collect attacker activity, map IP addresses, and classify attacks using the MITRE ATT&CK framework.
 
@@ -18,7 +18,7 @@ It uses Python, AsyncIO, WebSockets, Three.js, and Globe.gl to simulate vulnerab
 ## Architecture
 
 ```text
-AttackMe/
+Cyber Proj/
 ├── backend/
 │   ├── config.py
 │   ├── server.py
@@ -51,7 +51,7 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-Start AttackMe:
+Start the honeypot:
 
 ```bash
 python3 run.py
