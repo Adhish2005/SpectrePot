@@ -1,2 +1,2 @@
-# AttackMe Engine Package
+# SpectrePot Engine Package
 

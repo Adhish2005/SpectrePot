@@ -1,5 +1,5 @@
 /**
- * AttackMe — Attacker Session Replay Engine
+ * SpectrePot — Attacker Session Replay Engine
  * Plays back recorded keystrokes and outputs in a cyber terminal.
  */
 

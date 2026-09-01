@@ -1,5 +1,5 @@
 /**
- * AttackMe — SOC Telemetry & Analytics Charts
+ * SpectrePot — SOC Telemetry & Analytics Charts
  * Matte, elegant, minimalist styling powered by Chart.js
  */
 

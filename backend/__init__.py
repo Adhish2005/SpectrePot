@@ -1,2 +1,2 @@
-# AttackMe Backend Package
+# SpectrePot Backend Package
 

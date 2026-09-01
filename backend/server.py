@@ -15,7 +15,7 @@ from backend.engine.geo_enricher import geo_enricher
 from backend.engine.classifier import classifier
 from backend.engine.session_recorder import session_recorder
 
-app = FastAPI(title="AttackMe Threat Operations")
+app = FastAPI(title="SpectrePot Threat Operations")
 
 # CORS — restrict to same origin in production
 app.add_middleware(

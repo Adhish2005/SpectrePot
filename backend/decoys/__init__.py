@@ -1,2 +1,2 @@
-# AttackMe Decoys Package
+# SpectrePot Decoys Package
 

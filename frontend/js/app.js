@@ -1,8 +1,8 @@
 /**
- * AttackMe — Core Application Controller & WebSocket Client
+ * SpectrePot — Core Application Controller & WebSocket Client
  */
 
-class AttackMeApp {
+class SpectrePotApp {
     constructor() {
         this.socket = null;
         this.globe = null;
@@ -13,7 +13,7 @@ class AttackMeApp {
     }
 
     init() {
-        console.log('[*] Initializing AttackMe Operations Center...');
+        console.log('[*] Initializing SpectrePot Operations Center...');
 
         // 1. Initialize Threat Globe
         this.globe = new ThreatGlobe('globeContainer');
@@ -89,8 +89,6 @@ class AttackMeApp {
         } else if (message.type === 'NEW_ATTACK') {
             const attack = message.data;
             this.processNewAttack(attack);
-        } else if (message.type === 'DATA_CLEARED') {
-            this.handleDataCleared();
         }
     }
 
@@ -180,28 +178,8 @@ class AttackMeApp {
         }
     }
 
-    handleDataCleared() {
-        this.threatCount = 0;
-        this.critCount = 0;
-        this.uniqueIps.clear();
-        document.getElementById('hudTotalAttacks').textContent = 0;
-        document.getElementById('hudCriticalThreats').textContent = 0;
-        document.getElementById('hudUniqueIps').textContent = 0;
-        document.getElementById('attackFeedBody').innerHTML = '';
-        this.loadInitialStats();
-    }
 
     setupEventListeners() {
-        // Clear Logs Button
-        const clearBtn = document.getElementById('clearLogsBtn');
-        if (clearBtn) {
-            clearBtn.addEventListener('click', async () => {
-                if (confirm('Clear all stored attacks and telemetry history?')) {
-                    await fetch('/api/clear', { method: 'POST' });
-                }
-            });
-        }
-
         // Sessions Drawer Toggle
         const sessionsBtn = document.getElementById('viewSessionsBtn');
         if (sessionsBtn) {
@@ -214,7 +192,7 @@ class AttackMeApp {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new AttackMeApp();
+    window.app = new SpectrePotApp();
     window.app.init();
 });
 
